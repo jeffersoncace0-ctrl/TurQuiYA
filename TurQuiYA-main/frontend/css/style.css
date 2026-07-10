@@ -1,0 +1,40 @@
+body{
+font-family:Arial,sans-serif;
+margin:0;
+background:#f4f7fb;
+color:#333;
+}
+
+header{
+background:#008cba;
+color:white;
+padding:25px;
+text-align:center;
+}
+
+button{
+padding:10px;
+margin:5px;
+cursor:pointer;
+border:none;
+border-radius:8px;
+}
+
+#app{
+padding:30px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:15px 0;
+border-radius:12px;
+box-shadow:0 2px 8px #ccc;
+}
+
+input{
+display:block;
+margin:10px auto;
+padding:12px;
+width:250px;
+}
