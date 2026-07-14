@@ -1,7 +1,5 @@
-import { router } from './router.js';
+import {router} from './router.js';
 
-window.navigate = async (page, data = null) => {
-    await router(page, data);
-};
+window.navigate = router;
 
 router('home');
