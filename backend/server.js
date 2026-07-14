@@ -1,20 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const { Pool } = require('pg');
+const pool = require('./db');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-// Conexión a PostgreSQL
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'turquiya',
-    password: 'postgres',
-    port: 5432
-});
 
 // Ruta de prueba
 app.get('/', (req, res) => {
@@ -34,16 +25,15 @@ app.get('/destinos', async (req, res) => {
 
     } catch (error) {
 
-        console.error(error);
+    console.error(error);
 
-        res.status(500).json({
-            mensaje: 'Error al consultar los destinos'
-        });
+    res.status(500).json({
+        mensaje: error.message
+    });
 
     }
 
 });
-
 
 // Consultar un destino por ID
 app.get('/destinos/:id', async (req, res) => {
@@ -77,7 +67,7 @@ app.get('/destinos/:id', async (req, res) => {
 
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Servidor activo en http://localhost:${PORT}`);

@@ -35,7 +35,6 @@ export async function destinos() {
                     <h3>${destino.nombre}</h3>
 
                     <p><strong>Categoría:</strong> ${destino.categoria}</p>
-
                     <p>${destino.descripcion}</p>
 
                    <button onclick="navigate('detalle', ${destino.id_destino})">
