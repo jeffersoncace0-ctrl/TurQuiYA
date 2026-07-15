@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TurquiYA</title>
+    <link rel="stylesheet" href="./frontend/css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>TurquiYA</h1>
+    <p>Descubre el Atlántico a tu ritmo y presupuesto</p>
+
+    <nav id="navbar">
+        <!-- Botones públicos: SIEMPRE se ven al inicio de la página -->
+        <button id="btn-home" onclick="navigate('home')">Inicio</button>
+        <button id="btn-login" onclick="navigate('login')">Iniciar sesión</button>
+        
+        <!-- Botones privados: Ocultos estrictamente hasta que se pongan las credenciales -->
+        <button class="privado" onclick="navigate('destinos')" style="display: none;">Destinos</button>
+        <button class="privado" onclick="navigate('presupuesto')" style="display: none;">Presupuesto</button>
+        <button class="privado" onclick="navigate('perfil')" style="display: none;">Perfil</button>
+        <button class="privado" onclick="navigate('descubre')" style="display: none;">Descubre Atlántico</button>
+        <button class="privado" onclick="navigate('transporte')" style="display: none;">Transporte</button>
+        <button class="privado" onclick="navigate('moneda')" style="display: none;">Intercambio de moneda</button>
+        <button class="privado" onclick="cerrarSesion()" style="display: none; background-color: #ff4d4d; color: white;">Cerrar sesión</button>
+    </nav>
+</header>
+
+<main id="app"></main>
+
+<script type="module" src="./frontend/js/app.js"></script>
+</body>
+</html>
