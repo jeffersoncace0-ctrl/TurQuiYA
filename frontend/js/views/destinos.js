@@ -47,10 +47,27 @@ window.abrirModalDestino = (nombre, municipio, categoria, descripcion, eficienci
 export async function destinos() {
     const listado = await cargarDestinosDesdeServidor();
 
+    // 1. Group by municipality (Base level)
     const barranquilla = listado.filter(d => d.municipio === "Barranquilla");
     const puerto = listado.filter(d => d.municipio === "Puerto Colombia");
     const tubara = listado.filter(d => d.municipio === "Tubará");
     const usiacuri = listado.filter(d => d.municipio === "Usiacurí");
+
+    // 2. Define category matching keywords
+    const categoriasPlayas = ["playa", "balneario", "playas"];
+    const categoriasVidaNocturna = ["bar", "restaurante", "discoteca", "vida nocturna", "club", "bares", "restaurantes"];
+
+    // Helper to safely check categories in a case-insensitive manner
+    const esPlaya = (d) => d.categoria && categoriasPlayas.includes(d.categoria.toLowerCase().trim());
+    const esVidaNocturna = (d) => d.categoria && categoriasVidaNocturna.includes(d.categoria.toLowerCase().trim());
+
+    // 3. Filter Barranquilla sub-categories
+    const barranquillaPlayas = barranquilla.filter(esPlaya);
+    const barranquillaNocturna = barranquilla.filter(esVidaNocturna);
+
+    // 4. Filter Puerto Colombia sub-categories
+    const puertoPlayas = puerto.filter(esPlaya);
+    const puertoNocturna = puerto.filter(esVidaNocturna);
 
     const generarTarjetas = (arreglo) => {
         return arreglo.map(d => `
@@ -73,28 +90,41 @@ export async function destinos() {
     <div style="padding: 30px; max-width: 1200px; margin: 0 auto; font-family: sans-serif;">
         <h2 style="text-align: center; margin-bottom: 40px; font-size: 38px; font-weight: 800; background: linear-gradient(135deg, #ef4444, #eab308, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Destinos Turísticos del Atlántico</h2>
         
-        <!-- SECCIÓN BARRANQUILLA -->
         <h3 style="color: #ef4444; border-bottom: 3px solid #ef4444; padding-bottom: 5px; margin-top: 20px; margin-bottom: 15px; font-size: 24px;">Barranquilla</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
-            ${generarTarjetas(barranquilla)}
+        
+        <h4 style="color: #555; margin: 15px 0 10px 0; font-size: 18px; font-style: italic;">Playas</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 25px;">
+            ${barranquillaPlayas.length > 0 ? generarTarjetas(barranquillaPlayas) : '<p style="color: #999; font-style: italic; grid-column: 1/-1; margin: 0;">No se encontraron playas registradas.</p>'}
         </div>
 
-        <!-- SECCIÓN PUERTO COLOMBIA -->
+        <h4 style="color: #555; margin: 15px 0 10px 0; font-size: 18px; font-style: italic;">Vida Nocturna (Bares y Restaurantes)</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
+            ${barranquillaNocturna.length > 0 ? generarTarjetas(barranquillaNocturna) : '<p style="color: #999; font-style: italic; grid-column: 1/-1; margin: 0;">No se encontró vida nocturna registrada.</p>'}
+        </div>
+
+
         <h3 style="color: #eab308; border-bottom: 3px solid #eab308; padding-bottom: 5px; margin-bottom: 15px; font-size: 24px;">Puerto Colombia</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
-            ${generarTarjetas(puerto)}
+        
+        <h4 style="color: #555; margin: 15px 0 10px 0; font-size: 18px; font-style: italic;">Playas</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 25px;">
+            ${puertoPlayas.length > 0 ? generarTarjetas(puertoPlayas) : '<p style="color: #999; font-style: italic; grid-column: 1/-1; margin: 0;">No se encontraron playas registradas.</p>'}
         </div>
 
-        <!-- SECCIÓN TUBARÁ -->
+        <h4 style="color: #555; margin: 15px 0 10px 0; font-size: 18px; font-style: italic;">Vida Nocturna (Bares y Restaurantes)</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
+            ${puertoNocturna.length > 0 ? generarTarjetas(puertoNocturna) : '<p style="color: #999; font-style: italic; grid-column: 1/-1; margin: 0;">No se encontró vida nocturna registrada.</p>'}
+        </div>
+
+
         <h3 style="color: #10b981; border-bottom: 3px solid #10b981; padding-bottom: 5px; margin-bottom: 15px; font-size: 24px;">Tubará</h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
-            ${generarTarjetas(tubara)}
+            ${tubara.length > 0 ? generarTarjetas(tubara) : '<p style="color: #999; font-style: italic; grid-column: 1/-1; margin: 0;">No se encontraron destinos registrados.</p>'}
         </div>
 
-        <!-- SECCIÓN USIACURÍ -->
+
         <h3 style="color: #ef4444; border-bottom: 3px solid #ef4444; padding-bottom: 5px; margin-bottom: 15px; font-size: 24px;">Usiacurí</h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
-            ${generarTarjetas(usiacuri)}
+            ${usiacuri.length > 0 ? generarTarjetas(usiacuri) : '<p style="color: #999; font-style: italic; grid-column: 1/-1; margin: 0;">No se encontraron destinos registrados.</p>'}
         </div>
     </div>
     `;
