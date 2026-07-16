@@ -1,84 +1,3 @@
-# TurquiYA
-
-Aplicacion web turistica inteligente SPA.
-
-Tecnologias:
-- Frontend: HTML5, CSS3, JavaScript Vanilla
-- Backend preparado: Node.js + Express
-- Base de datos: PostgreSQL
-
-Funciones iniciales:
-- Inicio
-- Registro
-- Login
-- Destinos turisticos
-- Presupuesto inteligente
-- Perfil usuario
-
-
-
-# Sprint 2 - HU-04: Consultar destinos turísticos
-
-## Historia de Usuario
-
-**HU-04 – Consultar destinos turísticos**
-
-### Objetivo
-
-Implementar un catálogo dinámico de destinos turísticos consumiendo información desde una API desarrollada en Express y almacenada en PostgreSQL.
-
----
-
-# Funcionalidades implementadas
-
-## Backend
-
-### Configuración del entorno
-
-* Se inicializó el proyecto Node.js dentro de la carpeta `backend`.
-* Se creó el archivo `package.json`.
-* Se instalaron las dependencias:
-
-  * express
-  * cors
-  * pg
-* Se levantó un contenedor Docker con PostgreSQL 16.
-* Se creó la base de datos `turquiya`.
-
----
-
-### Base de datos
-
-Se creó la tabla `destinos`.
-
-Posteriormente se amplió el modelo agregando los campos:
-
-* categoria
-* imagen
-
-Estos campos permiten cumplir con los criterios de aceptación de la historia de usuario.
-
-También se actualizaron los registros existentes para incluir:
-
-* categoría del destino.
-* URL de imagen.
-
----
-
-### API REST
-
-Se implementaron los siguientes endpoints:
-
-## GET /
-
-Ruta de prueba para comprobar el funcionamiento del servidor.
-
-Respuesta:
-
-```json
-{
-  "mensaje": "API TurquiYA funcionando"
-}
 # Actualización — 14/07/2026
 
 ## Estado actual del proyecto
@@ -355,3 +274,38 @@ Actualmente:
 - Router SPA funcionando.
 - Navegación entre vistas correcta.
 - Proyecto preparado para comenzar la HU de Presupuesto Inteligente.
+
+# Actualización — 16/07/2026
+
+## Refactorización de Seguridad y Autenticación en la Nube
+
+Se realizó una migración crítica en el sistema de autenticación y enrutamiento para garantizar el correcto funcionamiento de la aplicación en entornos de producción (GitHub Pages / Cloudflare).
+
+### Problemas resueltos
+* **Error `Failed to fetch`:** Se eliminó la dependencia de un servidor local (`localhost:3000`) para el inicio de sesión.
+* **Pantalla en blanco (Crash del DOM):** Se corrigió la lógica de inicialización en `app.js` que bloqueaba la renderización del Landing Page al no encontrar credenciales previas.
+
+### Nuevas Funcionalidades Implementadas
+
+#### 1. Supabase Auth (Serverless)
+El sistema de registro e inicio de sesión ahora utiliza directamente el SDK oficial de Supabase.
+* Creación de usuarios de forma segura.
+* Manejo de sesiones y tokens nativos de Supabase.
+* Cierre de sesión sincronizado con la base de datos en la nube.
+
+#### 2. Guardián de Rutas (Route Guard)
+Se implementó un middleware nativo en Vanilla JS dentro de `app.js`.
+* **Rutas Públicas:** `home`, `login`, `registro`.
+* **Rutas Privadas:** Redirigen automáticamente al `login` si se intenta acceder a ellas sin un token válido en el `localStorage`.
+* El menú de navegación se actualiza dinámicamente según el estado de la sesión, ocultando estrictamente el contenido privado.
+
+#### 3. Refactorización del Router
+Se separó la responsabilidad de la navegación:
+* `router.js` se encarga exclusivamente de inyectar las vistas y manejar errores de carga (404).
+* `app.js` controla el historial de navegación y la seguridad de las rutas.
+
+### Archivos clave actualizados:
+- `frontend/js/app.js` (Guardián de rutas y control de estado)
+- `frontend/js/router.js` (Inyección limpia de HTML)
+- `frontend/js/views/login.js` & `registro.js` (Conexión con Supabase)
+- `frontend/js/services/api.js` (Centralización del cliente de Supabase)

@@ -1,4 +1,5 @@
 import { router } from './router.js';
+import { cerrarSesion as logoutSupabase } from './services/api.js';
 
 // Función mágica que controla visualmente el menú según el login
 function controlarMenuDinamico() {
@@ -43,10 +44,19 @@ window.navigate = async (page, data = null) => {
 };
 
 // Función para cuando el usuario quiera salir del sistema
-window.cerrarSesion = () => {
+window.cerrarSesion = async () => {
+    try {
+        await logoutSupabase(); // Le avisa a Supabase que destruya el token en la nube
+    } catch (error) {
+        console.error("Error cerrando sesión en la base de datos:", error);
+    }
+    
+    // Limpiamos todo rastro en el navegador
     localStorage.removeItem('usuario');
     localStorage.removeItem('ultimaPagina');
-    window.navigate('home'); // Al salir, lo mandamos al inicio, no al login directamente
+    localStorage.removeItem('supabase_session'); // Borra la sesión nativa de Supabase
+    
+    window.navigate('home'); // Redirige al inicio limpio
 };
 
 document.addEventListener("DOMContentLoaded", () => {
