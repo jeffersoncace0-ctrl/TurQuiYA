@@ -79,329 +79,279 @@ Respuesta:
 {
   "mensaje": "API TurquiYA funcionando"
 }
+# Actualización — 14/07/2026
+
+## Estado actual del proyecto
+
+Actualmente TurQuiYA funciona mediante una arquitectura cliente-servidor:
+
+Frontend (HTML + CSS + JavaScript)
+        ↓
+API REST (Node.js + Express)
+        ↓
+Supabase (PostgreSQL)
+
+El frontend ya no consume datos estáticos, sino que obtiene la información directamente desde la API, la cual consulta una base de datos PostgreSQL alojada en Supabase.
+
+Actualmente funcionan correctamente:
+
+- Navegación SPA mediante Router.
+- Catálogo dinámico de destinos.
+- Consulta individual de destinos.
+- Conexión del backend con Supabase.
+- API REST funcionando sobre Express.
+- Base de datos remota accesible mediante DATABASE_URL.
+
+---
+
+# Trabajo realizado
+
+## Migración del backend hacia Supabase
+
+Se creó el archivo:
+
+backend/db.js
+
+encargado de administrar el pool de conexiones utilizando:
+
+- pg
+- dotenv
+
+La conexión ahora utiliza la variable:
+
+DATABASE_URL
+
+almacenada dentro del archivo `.env`.
+
+---
+
+## Variables de entorno
+
+Se configuró el proyecto para utilizar:
+
+```env
+PORT=3000
+DATABASE_URL=postgresql://postgres:********@db.xxxxxxxxx.supabase.co:5432/postgres
+```
+
+De esta forma la contraseña queda fuera del código fuente.
+
+---
+
+## Dependencias instaladas
+
+Dentro de `backend` se instalaron:
+
+```bash
+npm install pg
+npm install dotenv
 ```
 
 ---
 
-## GET /destinos
+## Refactor del servidor
 
-Consulta todos los destinos registrados en PostgreSQL.
-
-Devuelve un arreglo JSON.
+`server.js` fue modificado para utilizar el pool de conexiones centralizado (`db.js`) en lugar de crear una conexión nueva en cada archivo.
 
 ---
 
-## GET /destinos/:id
+## Base de datos
 
-Consulta un único destino utilizando su identificador.
+La tabla `destinos` fue ampliada para adaptarse al frontend.
 
-Permite construir la vista de detalle.
+Se ejecutaron las siguientes consultas SQL.
 
----
+### Agregar columnas
 
-# Frontend
+```sql
+ALTER TABLE destinos
+ADD COLUMN categoria VARCHAR(50);
 
-## Servicio API
-
-Se mejoró `services/api.js`.
-
-Antes únicamente hacía:
-
-* fetch()
-
-Ahora:
-
-* centraliza todas las consultas
-
-* convierte automáticamente la respuesta a JSON
-
-* valida errores HTTP
-
-* incorpora funciones específicas como:
-
-* obtenerDestinos()
-
-* obtenerDestino(id)
+ALTER TABLE destinos
+ADD COLUMN imagen TEXT;
+```
 
 ---
 
-## Router
+### Actualizar registros
 
-Se refactorizó completamente el router.
+```sql
+UPDATE destinos
+SET
+categoria='Historia',
+imagen='https://images.unsplash.com/photo-1507525428034-b723cf961d3e'
+WHERE id_destino=1;
 
-Antes únicamente aceptaba:
+UPDATE destinos
+SET
+categoria='Historia',
+imagen='https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86'
+WHERE id_destino=2;
+
+UPDATE destinos
+SET
+categoria='Naturaleza',
+imagen='https://images.unsplash.com/photo-1500530855697-b586d89ba3ee'
+WHERE id_destino=3;
+```
+
+---
+
+### Verificación
+
+```sql
+SELECT * FROM destinos;
+```
+
+---
+
+### Ampliación del modelo de datos
+
+Se agregaron campos pensando en futuras funcionalidades.
+
+```sql
+ALTER TABLE destinos
+ADD COLUMN IF NOT EXISTS calificacion NUMERIC(2,1) DEFAULT 4.5,
+
+ADD COLUMN IF NOT EXISTS duracion VARCHAR(50),
+
+ADD COLUMN IF NOT EXISTS horario VARCHAR(100),
+
+ADD COLUMN IF NOT EXISTS latitud DECIMAL(10,8),
+
+ADD COLUMN IF NOT EXISTS longitud DECIMAL(11,8),
+
+ADD COLUMN IF NOT EXISTS activo BOOLEAN DEFAULT TRUE,
+
+ADD COLUMN IF NOT EXISTS fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+```
+
+---
+
+### Datos de ejemplo
+
+```sql
+UPDATE destinos
+SET
+calificacion = 4.8,
+duracion = '3 horas',
+horario = '08:00 - 18:00',
+latitud = 11.016700,
+longitud = -74.950000
+WHERE id_destino = 1;
+
+UPDATE destinos
+SET
+calificacion = 4.7,
+duracion = '2 horas',
+horario = '09:00 - 17:00',
+latitud = 11.000900,
+longitud = -74.958200
+WHERE id_destino = 2;
+
+UPDATE destinos
+SET
+calificacion = 4.9,
+duracion = 'Todo el día',
+horario = '08:00 - 17:00',
+latitud = 10.743600,
+longitud = -74.976300
+WHERE id_destino = 3;
+```
+
+---
+
+## Problemas encontrados
+
+### Error
+
+```
+Cannot find module 'pg'
+```
+
+Solución:
+
+Instalar la dependencia dentro de `backend`.
+
+```bash
+npm install pg
+```
+
+---
+
+### Error
+
+```
+ReferenceError: app is not defined
+```
+
+Causa:
+
+Durante la refactorización se eliminó accidentalmente la inicialización de Express.
+
+Solución:
+
+Restaurar:
 
 ```javascript
-navigate("destinos")
-```
+const app = express();
 
-Ahora acepta parámetros:
-
-```javascript
-navigate("detalle", id)
-```
-
-Esto permite reutilizar el router para cualquier vista que necesite información adicional.
-
----
-
-## Vista Destinos
-
-La vista dejó de contener información estática.
-
-Anteriormente las tarjetas estaban escritas manualmente.
-
-Ahora:
-
-* consulta la API
-* obtiene la información desde PostgreSQL
-* genera automáticamente todas las tarjetas
-* muestra un mensaje cuando no existen destinos
-* crea un botón "Ver detalle" para cada registro
-
----
-
-## Catálogo
-
-Se implementó un catálogo dinámico mostrando:
-
-* imagen
-* nombre
-* categoría
-* descripción
-
-Las tarjetas son generadas automáticamente mediante JavaScript.
-
----
-
-## Vista Detalle
-
-Se creó una nueva vista:
-
-```
-detalleDestino.js
-```
-
-Esta vista consulta:
-
-```
-GET /destinos/:id
-```
-
-y muestra:
-
-* imagen
-* nombre
-* categoría
-* ubicación
-* precio
-* descripción
-
-Además incorpora un botón para regresar al catálogo.
-
----
-
-## CSS
-
-Se añadieron nuevos estilos para el catálogo:
-
-* distribución responsive mediante Grid.
-* imágenes adaptables.
-* tarjetas con mejor presentación.
-
----
-
-# Problemas encontrados
-
-## 1. No existía package.json
-
-Problema:
-
-No era posible ejecutar npm.
-
-Solución:
-
-Se inicializó el proyecto con:
-
-```bash
-npm init -y
+app.use(cors());
+app.use(express.json());
 ```
 
 ---
 
-## 2. PostgreSQL no estaba instalado localmente
-
-Problema:
-
-Los comandos:
-
-```bash
-psql --version
-```
-
-y
-
-```bash
-mysql --version
-```
-
-no existían.
-
-Solución:
-
-Se reutilizó Docker para levantar PostgreSQL en un contenedor.
-
----
-
-## 3. La base de datos estaba vacía
-
-Problema:
-
-Existía el archivo `turquiya.sql`, pero PostgreSQL no tenía tablas.
-
-Comprobación:
+### Error
 
 ```
-\dt
-```
-
-respondía:
-
-```
-Did not find any relations.
+getaddrinfo ENOTFOUND
 ```
 
 Causa:
 
-El archivo SQL nunca había sido ejecutado.
+La URL de conexión de Supabase era incorrecta o contenía una contraseña incompleta.
 
 Solución:
 
-Se importó el script dentro del contenedor utilizando `psql`.
+Obtener nuevamente la cadena de conexión desde:
 
-Resultado:
+Settings → Database → Connection String
 
-Las tablas fueron creadas correctamente.
-
----
-
-## 4. Error:
-
-```
-Error al consultar los destinos
-```
-
-Causa:
-
-La tabla no existía todavía.
-
-Solución:
-
-Crear las tablas e insertar la información desde el script SQL.
+y actualizar `DATABASE_URL`.
 
 ---
 
-## 5. Error:
+### Error
 
 ```
-Missing script: start
-```
-
-Causa:
-
-Se estaba ejecutando npm desde la carpeta raíz del proyecto.
-
-Solución:
-
-Ejecutar el servidor desde:
-
-```
-backend/
-```
-
-donde sí existe el archivo `package.json`.
-
----
-
-## 6. Error:
-
-```
-Cannot GET /destinos
-```
-
-Causa:
-
-Durante la implementación de:
-
-```
-GET /destinos/:id
-```
-
-se reemplazó accidentalmente la ruta:
-
-```
-GET /destinos
-```
-
-por la nueva.
-
-Como consecuencia:
-
-* el detalle funcionaba
-* el catálogo dejó de funcionar
-
-Solución:
-
-Restaurar ambas rutas:
-
-```
-GET /destinos
-GET /destinos/:id
-```
-
-manteniéndolas como endpoints independientes.
-
----
-
-## 7. Error:
-
-```
-No fue posible cargar el destino
+GET http://127.0.0.1:5500/undefined
 ```
 
 Diagnóstico:
 
-Se comprobó directamente la URL:
+El frontend intentaba cargar:
 
+```javascript
+destino.imagen
 ```
-http://localhost:3000/destinos/1
-```
 
-Esta prueba permitió detectar que el problema estaba en la API y no en el frontend.
+pero dicho campo aún no existía en la base de datos.
 
-Una vez restaurado el endpoint correcto, la vista de detalle comenzó a funcionar sin modificar el frontend.
+Solución:
+
+Agregar la columna `imagen` en PostgreSQL y actualizar los registros.
 
 ---
 
-# Resultado final
+## Estado al finalizar la jornada
 
-La historia HU-04 quedó implementada satisfactoriamente.
+Actualmente:
 
-Actualmente el sistema permite:
-
-* consultar todos los destinos desde PostgreSQL.
-* visualizar un catálogo dinámico.
-* mostrar imágenes.
-* mostrar categorías.
-* seleccionar un destino.
-* consultar el detalle del destino.
-* navegar entre catálogo y detalle sin recargar la página.
-* mantener una arquitectura modular basada en:
-
-  * Router
-  * Views
-  * Services
-  * Express
-  * PostgreSQL
-
-La aplicación ya no depende de datos estáticos escritos manualmente, sino que consume información directamente desde la base de datos mediante una API REST.
+- Backend funcionando con Express.
+- Base de datos migrada a Supabase.
+- Endpoints funcionando correctamente.
+- Consulta de destinos operativa.
+- Router SPA funcionando.
+- Navegación entre vistas correcta.
+- Proyecto preparado para comenzar la HU de Presupuesto Inteligente.
