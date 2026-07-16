@@ -1,7 +1,3 @@
-// =====================================================
-// router.js — Navegación de TurquiYA
-// =====================================================
-
 import { home } from './views/home.js';
 import { login } from './views/login.js';
 import { registro } from './views/registro.js';
@@ -22,10 +18,7 @@ const routes = {
     descubre
 };
 
-// =====================================================
-// FUNCIÓN NAVIGATE — La usan los botones del HTML
-// =====================================================
-export async function navigate(page, data = null) {
+export async function router(page, data = null) {
     const app = document.getElementById("app");
 
     if (!app) {
@@ -60,15 +53,3 @@ export async function navigate(page, data = null) {
         `;
     }
 }
-
-// =====================================================
-// FUNCIÓN ROUTER — Alias para compatibilidad
-// =====================================================
-export async function router(page, data = null) {
-    return navigate(page, data);
-}
-
-// =====================================================
-// HACER NAVIGATE GLOBAL — Para onclick en HTML
-// =====================================================
-window.navigate = navigate;
