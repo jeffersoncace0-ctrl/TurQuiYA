@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Cómo me desplazo?</title>
+
+<style>
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background: #EAF6FF;
+    margin:0;
+    padding:30px;
+    
+}
+
+#titleTrans{
+    text-align:center;
+    color:rgb(241,59,59);
+    margin-bottom:30px;
+}
+
+.contenedor{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:25px;
+}
+
+.transp{
+    width:260px;
+    background:rgb(78, 227, 78);
+    color:white;
+    border:5px solid #2E86DE;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+}
+
+.transp a{
+    text-decoration:none;
+    color:white;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.transp p{
+    margin-top:15px;
+    line-height:1.5;
+}
+
+#logoTransp{
+    margin-top:40px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+#logoTransp img{
+    width:100px;
+    transition:.3s;
+}
+
+#logoTransp img:hover{
+    transform:scale(1.1);
+}
+
+.transp:hover{
+    background-color: #2E86DE;
+    cursor: pointer;
+}
+#ruta{
+    width:1060px;
+    background:rgb(78, 227, 78);
+    color:white;
+    border:5px solid #2E86DE;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    font-size: larger;
+    font-family: Arial, Helvetica, sans-serif;
+
+    margin:30px auto;
+
+}
+
+#ruta:hover{
+    background-color: #2E86DE;
+    cursor: pointer;
+}
+
+.tarjeta{
+
+    width:350px;
+    margin:30px auto;
+    padding:20px;
+
+    background:#ffffff;
+
+    border-radius:15px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
+
+    border-left:8px solid #0aa84f;
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    display:none;
+
+}
+
+.tarjeta h2{
+
+    color:#0aa84f;
+
+    margin-bottom:20px;
+
+}
+
+.tarjeta p{
+
+    margin:12px 0;
+
+    font-size:18px;
+
+}
+</style>
+</head>
+
+<body>
+
+<h1 id="titleTrans">¿Cómo me desplazo?</h1>
+
+<div class="contenedor">
+
+    <div class="transp">
+        <a href="#logoTransp">Moto</a>
+        <p>Puedes moverte rápidamente por gran parte de la ciudad.</p>
+    </div>
+
+    <div class="transp">
+        <a href="#logoTransp">Taxi / Carros particulares</a>
+        <p>Puedes recorrer toda la ciudad de forma cómoda y segura.</p>
+    </div>
+
+    <div class="transp">
+        <a href="#logoTransp">Buses urbanos</a>
+        <p>Puedes viajar de norte a sur de la ciudad de una manera económica.</p>
+    </div>
+
+    <div class="transp">
+        <a href="#logoTransp">Buses intermunicipales</a>
+        <p>Son la mejor opción para desplazarte hacia los municipios del Atlántico.</p>
+    </div>
+
+</div> <br>
+
+<div id="ruta" class="contentRuta">Calcular Ruta <br>
+    <p><ul>Planifica tu recorrido
+
+            Selecciona tu punto de partida y el destino que deseas visitar. TurQuiYA calculará la distancia aproximada para ayudarte a planificar tu viaje.</ul></p>
+
+    Desde <select name="origen" id="origen"> <br>
+        <option value="blank"></option>
+        <option value="malecon"> malecon del rio</option>
+        <option value="aleta"> ventana de campeones</option>
+        <option value="mundo">ventana al mundo</option>
+        <option value="zoo">zoologico</option>
+        <option value="ptoCol">Puerto Colombia </option>
+        <option value="tubara"> Tubara</option>
+        <option value="Usiacuri"> Usiacuri</option>
+    </select> <br>
+     Hasta <select name="destino" id="destino" >
+        <option value="blank"></option>
+        <option value="malecon"> malecon del rio</option>
+        <option value="aleta"> ventana de campeones</option>
+        <option value="mundo">ventana al mundo</option>
+        <option value="zoo">zoologico</option>
+        <option value="ptoCol">Puerto Colombia </option>
+        <option value="tubara"> Tubara</option>
+        <option value="Usiacuri"> Usiacuri</option>
+    </select> <br>
+
+    <button onclick="calcular()">
+    Calcular distancia 
+    </button> <br>
+    <button onclick="restablecer()">
+    Restablecer
+    </button>
+</div>
+
+
+<div id="resultado" class="tarjeta">
+    <h2>🧭 Información del recorrido</h2>
+
+    <p><strong>📍 Origen:</strong> <span id="origenTxt">-</span></p>
+
+    <p><strong>🎯 Destino:</strong> <span id="destinoTxt">-</span></p>
+
+    <p><strong>📏 Distancia:</strong> <span id="distanciaTxt">-</span></p>
+
+
+</div>
+
+<div id="logoTransp">
+
+    <a href="https://web.didiglobal.com/co/pasajero/" target="_blank">
+        <img src="/img/didi-logo.png" alt="DiDi">
+    </a>
+    <a href="https://www.uber.com/co/es/"><img src="/img/logo-uber.png" alt="Uber"></a>
+    <a href="https://yango.com/es_co/"><img src="/img/yango-logo.jpg" alt="Yango"></a>
+    <a href="https://indrive.com/es-co"> <img src="/img/indriver-logo.png" alt="InDriver">
+    </a>
+   
+</div>
+<script>
+    const lugares = {
+    malecon: {
+        nombre: "Gran Malecón del Río",
+        lat: 10.9986,
+        lng: -74.7813
+    },
+
+    aleta: {
+        nombre: "Ventana de Campeones",
+        lat: 10.9875,
+        lng: -74.8010
+    },
+
+    mundo: {
+        nombre: "Ventana al Mundo",
+        lat: 11.0194,
+        lng: -74.8493
+    },
+
+    zoo: {
+        nombre: "Zoológico de Barranquilla",
+        lat: 10.9982,
+        lng: -74.8074
+    },
+
+    ptoCol: {
+        nombre: "Puerto Colombia",
+        lat: 10.9872,
+        lng: -74.9546
+    },
+
+    tubara: {
+        nombre: "Tubará",
+        lat: 10.8740,
+        lng: -75.0006
+    },
+
+    Usiacuri: {
+        nombre: "Usiacurí",
+        lat: 10.7426,
+        lng: -74.9766
+    }
+};
+
+const origen = document.getElementById("origen").value;
+const destino = document.getElementById("destino").value;
+
+function calcularDistancia(lat1, lon1, lat2, lon2){
+
+    const R = 6371;
+
+    const dLat = (lat2-lat1) * Math.PI/180;
+    const dLon = (lon2-lon1) * Math.PI/180;
+
+    const a =
+        Math.sin(dLat/2)**2 +
+        Math.cos(lat1*Math.PI/180) *
+        Math.cos(lat2*Math.PI/180) *
+        Math.sin(dLon/2)**2;
+
+    const c = 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+
+    return R*c;
+}
+
+function calcular(){
+
+    const o = lugares[document.getElementById("origen").value];
+    const d = lugares[document.getElementById("destino").value];
+
+    const distancia = calcularDistancia(
+        o.lat,
+        o.lng,
+        d.lat,
+        d.lng
+    );
+
+    const tarjeta = document.getElementById("resultado");
+
+    document.getElementById("origenTxt").textContent = o.nombre;
+
+    document.getElementById("destinoTxt").textContent = d.nombre;
+
+    document.getElementById("distanciaTxt").textContent =
+    distancia.toFixed(2) + " km";
+
+    tarjeta.style.display = "block";
+}
+
+function restablecer(){
+
+    // Reiniciar los select
+    document.getElementById("origen").selectedIndex = 0;
+    document.getElementById("destino").selectedIndex = 0;
+
+    // Limpiar la tarjeta
+    document.getElementById("origenTxt").textContent = "-";
+    document.getElementById("destinoTxt").textContent = "-";
+    document.getElementById("distanciaTxt").textContent = "-";
+
+    // Ocultar la tarjeta
+    document.getElementById("resultado").style.display = "none";
+
+}
+</script>
+
+</body>
+</html>
