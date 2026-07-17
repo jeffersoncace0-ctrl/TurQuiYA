@@ -1,5 +1,5 @@
 // =====================================================
-// login.js — Login con Supabase Auth
+// login.js — Login con Supabase Auth (Mejorado)
 // =====================================================
 
 import { iniciarSesion, obtenerPerfilUsuario } from '../services/api.js';
@@ -24,12 +24,21 @@ export function login() {
                 const password = passwordInput.value.trim();
 
                 try {
+                    // 1. Iniciar sesión en Auth
                     const { user, session } = await iniciarSesion(email, password);
-                    
                     localStorage.setItem('supabase_session', JSON.stringify(session));
                     
-                    const perfil = await obtenerPerfilUsuario();
-                    localStorage.setItem('usuario', JSON.stringify(perfil));
+                    // 2. Intentar buscar el perfil público
+                    let perfil = null;
+                    try {
+                        perfil = await obtenerPerfilUsuario();
+                    } catch (perfilErr) {
+                        console.warn("No hay perfil extendido o tabla inaccesible, usando datos básicos.");
+                    }
+                    
+                    // Evitamos guardar un texto "null". Si no hay perfil, guardamos los datos básicos de Auth.
+                    const datosParaGuardar = perfil ? perfil : user;
+                    localStorage.setItem('usuario', JSON.stringify(datosParaGuardar));
                     
                     alert("Inicio de sesión exitoso");
                     
@@ -40,7 +49,14 @@ export function login() {
                     }
                     
                 } catch (error) {
-                    if (errorTxt) errorTxt.innerText = error.message || "Correo o contraseña incorrectos.";
+                    // ESTO ES CLAVE: Mostrará en consola la razón real del bloqueo
+                    console.error("🕵️‍♂️ Error real de conexión:", error); 
+                    
+                    if (error.message === "Failed to fetch") {
+                        if (errorTxt) errorTxt.innerText = "Error de red. Verifica Supabase CORS o tu bloqueador de anuncios.";
+                    } else {
+                        if (errorTxt) errorTxt.innerText = error.message || "Correo o contraseña incorrectos.";
+                    }
                 }
             });
         }
