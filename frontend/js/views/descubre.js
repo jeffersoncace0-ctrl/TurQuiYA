@@ -1,3 +1,13 @@
+window.navigateAndScroll = async (id) => {
+    await window.navigate('destinos');
+    setTimeout(() => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 150);
+};
+
 export function descubre() {
     return `
     <div style="padding: 40px 20px; max-width: 1000px; margin: 0 auto; font-family: 'Montserrat', sans-serif;">
@@ -17,7 +27,7 @@ export function descubre() {
                     <span style="background: #ef4444; color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;">La Capital</span>
                     <h2 style="color: #1e293b; font-size: 30px; font-weight: 800; margin: 15px 0;">Barranquilla</h2>
                     <p style="color: #475569; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">La Puerta de Oro de Colombia. Vibra con el Gran Malecón del Río, la monumental Ventana del Mundo y la mejor gastronomía costeña. Una metrópolis moderna que no olvida sus raíces, su alegría y su Carnaval.</p>
-                    <button onclick="navigate('destinos')" style="background: #1e293b; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">Explorar sus destinos 👉</button>
+                    <button onclick="navigateAndScroll('seccion-barranquilla')" style="background: #1e293b; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">Explorar sus destinos 👉</button>
                 </div>
             </div>
 
@@ -30,7 +40,7 @@ export function descubre() {
                     <span style="background: #eab308; color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;">Historia y Playa</span>
                     <h2 style="color: #1e293b; font-size: 30px; font-weight: 800; margin: 15px 0;">Puerto Colombia</h2>
                     <p style="color: #475569; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">Cuna de la migración en Colombia. Enamórate del histórico Muelle 1888, relájate en las hermosas playas de Pradomar o Miramar y contempla los mejores atardeceres del departamento desde el Castillo de Salgar.</p>
-                    <button onclick="navigate('destinos')" style="background: #1e293b; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">Explorar sus destinos 👉</button>
+                    <button onclick="navigateAndScroll('seccion-puerto')" style="background: #1e293b; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">Explorar sus destinos 👉</button>
                 </div>
             </div>
 
@@ -43,7 +53,7 @@ export function descubre() {
                     <span style="background: #10b981; color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;">Pueblo Mágico</span>
                     <h2 style="color: #1e293b; font-size: 30px; font-weight: 800; margin: 15px 0;">Usiacurí</h2>
                     <p style="color: #475569; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">El rincón más colorido y pacífico del departamento. Camina por el imponente Macromural, conoce las hermosas artesanías tejidas en palma de iraca y sumérgete en la naturaleza del Bosque de Luriza.</p>
-                    <button onclick="navigate('destinos')" style="background: #1e293b; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">Explorar sus destinos 👉</button>
+                    <button onclick="navigateAndScroll('seccion-usiacuri')" style="background: #1e293b; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">Explorar sus destinos 👉</button>
                 </div>
             </div>
 

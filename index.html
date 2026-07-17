@@ -10,22 +10,29 @@
 <body>
 
 <header>
-    <h1>TurquiYA</h1>
+    <!-- El logo y título de tu compañero -->
+    <div class="header-title-container">
+        <img src="./img/logo turquiya.png" alt="TurquiYA Logo" class="header-logo">
+        <h1>TurquiYA</h1>
+    </div>
     <p>Descubre el Atlántico a tu ritmo, presupuesto y estilo</p>
-
+    
+    <!-- Nuestro menú hamburguesa para móviles -->
+    <input type="checkbox" id="menu-toggle">
+    <label for="menu-toggle" class="menu-icon">&#9776;</label>
 
     <nav id="navbar">
-        <!-- Botones públicos: SIEMPRE se ven al inicio de la página -->
+        <!-- Botones públicos -->
         <button id="btn-home" onclick="navigate('home')">Inicio</button>
         <button id="btn-login" onclick="navigate('login')">Iniciar sesión</button>
         
-        <!-- Botones privados: Ocultos estrictamente hasta que se pongan las credenciales -->
-        <button class="privado" onclick="navigate('destinos')" style="display: none;">Destinos</button>
+        <!-- Botones privados (Con el orden de tu compañero y la ruta 'intercambio' corregida) -->
+        <button class="privado" onclick="navigate('descubre')" style="display: none;">Descubre Atlántico</button>
         <button class="privado" onclick="navigate('presupuesto')" style="display: none;">Presupuesto</button>
         <button class="privado" onclick="navigate('perfil')" style="display: none;">Perfil</button>
-        <button class="privado" onclick="navigate('descubre')" style="display: none;">Descubre Atlántico</button>
+        <button class="privado" onclick="navigate('destinos')" style="display: none;">Destinos</button>
         <button class="privado" onclick="navigate('transporte')" style="display: none;">Transporte</button>
-        <button class="privado" onclick="navigate('moneda')" style="display: none;">Intercambio de moneda</button>
+        <button class="privado" onclick="navigate('intercambio')" style="display: none;">Intercambio de moneda</button>
         <button class="privado" onclick="cerrarSesion()" style="display: none; background-color: #ff4d4d; color: white;">Cerrar sesión</button>
     </nav>
 </header>

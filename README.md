@@ -309,3 +309,76 @@ Se separó la responsabilidad de la navegación:
 - `frontend/js/router.js` (Inyección limpia de HTML)
 - `frontend/js/views/login.js` & `registro.js` (Conexión con Supabase)
 - `frontend/js/services/api.js` (Centralización del cliente de Supabase)
+
+
+
+
+
+Reporte de Actualizaciones — TurQuiYA
+Estado Actual del Proyecto (Consolidado)
+La arquitectura de TurQuiYA ha evolucionado de un modelo tradicional con servidor local hacia un entorno moderno enfocado en la nube (Serverless) para la autenticación.
+
+Actualmente, las funcionalidades operativas incluyen:
+
+Una Single Page Application (SPA) con navegación dinámica y un enrutador (Router) independiente.
+
+Un catálogo dinámico que permite la consulta individual de destinos turísticos.
+
+Una base de datos PostgreSQL alojada en Supabase, accesible de forma segura.
+
+Un sistema de autenticación gestionado directamente mediante el SDK de Supabase Auth, preparando el proyecto para entornos de producción como GitHub Pages o Cloudflare.
+
+Actualización — 16/07/2026: Seguridad y Autenticación Serverless
+Durante esta jornada, se realizó una migración crítica en el enrutamiento y la validación de usuarios, eliminando la dependencia de un backend local para el inicio de sesión.
+
+1. Integración de Supabase Auth
+El sistema de registro e inicio de sesión ahora utiliza directamente el SDK oficial de Supabase.
+
+Se implementó la creación de usuarios de forma segura y el manejo de sesiones con tokens nativos de la plataforma.
+
+El cierre de sesión está completamente sincronizado con la base de datos en la nube.
+
+Archivos modificados: frontend/js/views/login.js, frontend/js/views/registro.js y frontend/js/services/api.js (ahora centraliza el cliente de Supabase).
+
+2. Guardián de Rutas (Route Guard)
+Se implementó un middleware nativo en Vanilla JS dentro de frontend/js/app.js.
+
+Se definieron home, login y registro estrictamente como rutas públicas.
+
+Las rutas privadas ahora evalúan el localStorage; si no existe un token válido, redirigen automáticamente al login.
+
+El menú de navegación se actualiza dinámicamente según el estado de la sesión, ocultando el contenido restringido.
+
+3. Refactorización del Router
+Se separaron las responsabilidades de la navegación: frontend/js/app.js controla el historial y la seguridad, mientras que frontend/js/router.js se encarga exclusivamente de inyectar las vistas HTML y manejar errores de carga (pantallas 404).
+
+4. Corrección de Errores Críticos
+Error Failed to fetch: Solucionado al eliminar la llamada al servidor local (localhost:3000) durante el inicio de sesión.
+
+Crash del DOM (Pantalla en blanco): Se corrigió la lógica de inicialización en app.js que bloqueaba la renderización del Landing Page cuando el usuario no tenía credenciales previas.
+
+Actualización — 14/07/2026: Migración de Base de Datos y Backend
+Esta actualización se centró en la conexión de la base de datos a Supabase y la ampliación del modelo de información de los destinos.
+
+1. Migración y Configuración (Node.js + Express)
+Se instalaron las dependencias pg y dotenv dentro del entorno del backend.
+
+Se creó el archivo backend/db.js para administrar el pool de conexiones centralizado, reemplazando la creación de conexiones individuales por archivo en server.js.
+
+La conexión ahora utiliza la variable DATABASE_URL (obtenida desde Supabase), la cual se mantiene oculta en el código fuente gracias a un archivo .env.
+
+2. Ampliación del Modelo de Datos (PostgreSQL)
+La tabla destinos fue ampliada para coincidir con las necesidades visuales del frontend, añadiendo las columnas categoria e imagen.
+
+Se actualizaron los registros existentes con información real de ejemplo, como URLs fotográficas y categorías (ej. 'Historia', 'Naturaleza').
+
+Anticipando funcionalidades futuras, se añadieron los campos: calificacion, duracion, horario, latitud, longitud, activo y fecha_creacion.
+
+3. Resolución de Problemas Técnicos
+Módulo faltante (Cannot find module 'pg'): Resuelto mediante la instalación directa de la dependencia en el directorio del backend.
+
+Servidor caído (ReferenceError: app is not defined): Se restauró accidentalmente código borrado, volviendo a inicializar la instancia de Express y sus dependencias (cors, express.json()).
+
+Fallo de conexión a la BD (getaddrinfo ENOTFOUND): Se corrigió actualizando la cadena de conexión DATABASE_URL con los parámetros exactos provistos por los ajustes de Supabase.
+
+Imágenes rotas en Frontend (undefined): Se solucionó agregando la columna imagen en la base de datos y poblándola con datos, ya que el frontend intentaba renderizar un campo inexistente.

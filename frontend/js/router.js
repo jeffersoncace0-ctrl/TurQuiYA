@@ -6,6 +6,9 @@ import { presupuesto } from './views/presupuesto.js';
 import { perfil } from './views/perfil.js';
 import { detalleDestino } from './views/detalleDestino.js';
 import { descubre } from './views/descubre.js';
+// Importamos las nuevas vistas de tu compañero
+import { transporte } from './views/transporte.js';
+import { intercambio } from './views/intercambio.js';
 
 const routes = {
     home,
@@ -15,7 +18,9 @@ const routes = {
     presupuesto,
     perfil,
     detalle: detalleDestino,
-    descubre
+    descubre,
+    transporte, // Nueva ruta registrada
+    intercambio // Nueva ruta registrada
 };
 
 export async function router(page, data = null) {
