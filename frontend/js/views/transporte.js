@@ -98,22 +98,20 @@ export async function transporte() {
                 <p class="nota-tarifa">* Tarifa aplicada según distancia y tipo de transporte</p>
             </div>
 
-            <!-- ENLACES DE LOGOS CORREGIDOS USANDO CLEARBIT API -->
-            <div id="logoTransp" style="display: flex; justify-content: center; gap: 30px; align-items: center; flex-wrap: wrap; margin-top: 20px; padding-bottom: 20px;">
+            <div id="logoTransp" style="display: flex; justify-content: center; gap: 20px; align-items: center; flex-wrap: wrap; margin-top: 20px; padding-bottom: 20px;">
                 <a href="https://web.didiglobal.com/co/pasajero/" target="_blank" rel="noopener noreferrer">
-                    <img src="https://logo.clearbit.com/didiglobal.com" alt="DiDi" style="height: 35px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Didi_Chuxing.svg" alt="DiDi" style="height: 25px;">
                 </a>
                 <a href="https://www.uber.com/co/es/" target="_blank" rel="noopener noreferrer">
-                    <img src="https://logo.clearbit.com/uber.com" alt="Uber" style="height: 35px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt="Uber" style="height: 25px;">
                 </a>
                 <a href="https://yango.com/es_co/" target="_blank" rel="noopener noreferrer">
-                    <img src="https://logo.clearbit.com/yango.com" alt="Yango" style="height: 35px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Yango_%28entreprise%29.png" alt="Yango" style="height: 25px;">
                 </a>
                 <a href="https://indrive.com/es-co" target="_blank" rel="noopener noreferrer">
-                    <img src="https://logo.clearbit.com/indrive.com" alt="InDriver" style="height: 35px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/InDrive_Logo.svg" alt="InDriver" style="height: 25px;">
                 </a>
             </div>
-        </div>
     `;
 }
 
@@ -129,56 +127,61 @@ const lugares = {
 };
 
 // ======== CONFIGURACIÓN POR TIPO DE TRANSPORTE ========
+// Cada transporte tiene su propia velocidad y estructura de tarifas
 const configTransporte = {
     moto: {
         nombre: "Moto",
-        velocidad: 45, 
-        tipoTarifa: "por_km", 
-        tarifaBase: 3000, 
+        velocidad: 45, // km/h (más rápido en tráfico)
+        tipoTarifa: "por_km", // calcula por kilómetro
+        tarifaBase: 3000, // tarifa mínima de banderazo
         tarifas: [
-            { min: 0,    max: 4,    valor: 2500, descripcion: "$2.500 COP/km" },      
-            { min: 4.01, max: 10,   valor: 1800, descripcion: "$1.800 COP/km" },      
-            { min: 10.01, max: 999, valor: 1200, descripcion: "$1.200 COP/km" }       
+            { min: 0,    max: 4,    valor: 2500, descripcion: "$2.500 COP/km" },      // 1-4 km
+            { min: 4.01, max: 10,   valor: 1800, descripcion: "$1.800 COP/km" },      // 4.1-10 km
+            { min: 10.01, max: 999, valor: 1200, descripcion: "$1.200 COP/km" }       // 10.1+ km
         ]
     },
     taxi: {
         nombre: "Taxi / Carro particular",
-        velocidad: 35, 
+        velocidad: 35, // km/h (tráfico urbano)
         tipoTarifa: "por_km",
-        tarifaBase: 5500, 
+        tarifaBase: 5500, // banderazo más alto
         tarifas: [
-            { min: 0,    max: 4,    valor: 4000, descripcion: "$4.000 COP/km" },      
-            { min: 4.01, max: 10,   valor: 2500, descripcion: "$2.500 COP/km" },      
-            { min: 10.01, max: 999, valor: 1800, descripcion: "$1.800 COP/km" }       
+            { min: 0,    max: 4,    valor: 4000, descripcion: "$4.000 COP/km" },      // 1-4 km
+            { min: 4.01, max: 10,   valor: 2500, descripcion: "$2.500 COP/km" },      // 4.1-10 km
+            { min: 10.01, max: 999, valor: 1800, descripcion: "$1.800 COP/km" }       // 10.1+ km
         ]
     },
     busUrbano: {
         nombre: "Bus urbano",
-        velocidad: 20, 
-        tipoTarifa: "fija", 
+        velocidad: 20, // km/h (paradas frecuentes)
+        tipoTarifa: "fija", // tarifa fija por trayecto, no por km
         tarifaBase: 0,
         tarifas: [
-            { min: 0,    max: 4,    valor: 2800, descripcion: "$2.800 COP (fijo)" },  
-            { min: 4.01, max: 10,   valor: 2800, descripcion: "$2.800 COP (fijo)" },  
-            { min: 10.01, max: 999, valor: 3500, descripcion: "$3.500 COP (fijo)" }   
+            { min: 0,    max: 4,    valor: 2800, descripcion: "$2.800 COP (fijo)" },  // ≤4 km
+            { min: 4.01, max: 10,   valor: 2800, descripcion: "$2.800 COP (fijo)" },  // ≤10 km
+            { min: 10.01, max: 999, valor: 3500, descripcion: "$3.500 COP (fijo)" }   // >10 km
         ]
     },
     busIntermunicipal: {
         nombre: "Bus intermunicipal",
-        velocidad: 55, 
+        velocidad: 55, // km/h (vía rápida)
         tipoTarifa: "por_km",
-        tarifaBase: 5000, 
+        tarifaBase: 5000, // pasaje base
         tarifas: [
-            { min: 0,    max: 4,    valor: 3500, descripcion: "$3.500 COP/km" },      
-            { min: 4.01, max: 10,   valor: 2200, descripcion: "$2.200 COP/km" },      
-            { min: 10.01, max: 999, valor: 1500, descripcion: "$1.500 COP/km" }       
+            { min: 0,    max: 4,    valor: 3500, descripcion: "$3.500 COP/km" },      // 1-4 km
+            { min: 4.01, max: 10,   valor: 2200, descripcion: "$2.200 COP/km" },      // 4.1-10 km
+            { min: 10.01, max: 999, valor: 1500, descripcion: "$1.500 COP/km" }       // 10.1+ km
         ]
     }
 };
 
 // ======== FUNCIONES AUXILIARES ========
+
+/**
+ * Calcula la distancia entre dos puntos usando la fórmula de Haversine
+ */
 function calcularDistancia(lat1, lon1, lat2, lon2) {
-    const R = 6371; 
+    const R = 6371; // Radio de la Tierra en km
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a =
@@ -190,12 +193,16 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
+/**
+ * Obtiene la tarifa aplicable según la distancia y tipo de transporte
+ */
 function obtenerTarifa(distanciaKm, tipoTransporte) {
     const config = configTransporte[tipoTransporte];
     if (!config) {
         return { valor: 4000, rango: "Desconocido", descripcion: "Tarifa estándar" };
     }
 
+    // Buscar el rango que corresponde
     for (const rango of config.tarifas) {
         if (distanciaKm >= rango.min && distanciaKm <= rango.max) {
             return {
@@ -207,6 +214,7 @@ function obtenerTarifa(distanciaKm, tipoTransporte) {
         }
     }
 
+    // Por defecto, último rango
     const ultimo = config.tarifas[config.tarifas.length - 1];
     return {
         valor: ultimo.valor,
@@ -216,6 +224,9 @@ function obtenerTarifa(distanciaKm, tipoTransporte) {
     };
 }
 
+/**
+ * Calcula el tiempo estimado según la distancia y velocidad del transporte
+ */
 function calcularTiempo(distanciaKm, tipoTransporte) {
     const velocidad = configTransporte[tipoTransporte]?.velocidad || 35;
     const tiempoHoras = distanciaKm / velocidad;
@@ -233,6 +244,9 @@ function calcularTiempo(distanciaKm, tipoTransporte) {
     }
 }
 
+/**
+ * Calcula el costo total según el tipo de tarifa (por km o fija)
+ */
 function calcularCosto(distanciaKm, tipoTransporte) {
     const config = configTransporte[tipoTransporte];
     const tarifa = obtenerTarifa(distanciaKm, tipoTransporte);
@@ -241,9 +255,11 @@ function calcularCosto(distanciaKm, tipoTransporte) {
     let detalleCosto;
 
     if (config.tipoTarifa === "fija") {
+        // Tarifa fija: solo se cobra el valor del rango, independiente de los km exactos
         costoTotal = tarifa.valor;
         detalleCosto = "Tarifa fija: " + tarifa.descripcion;
     } else {
+        // Tarifa por km: banderazo + (distancia × valor por km)
         const costoVariable = distanciaKm * tarifa.valor;
         costoTotal = config.tarifaBase + costoVariable;
         detalleCosto = "Banderazo: $" + config.tarifaBase.toLocaleString("es-CO") + 
@@ -256,11 +272,15 @@ function calcularCosto(distanciaKm, tipoTransporte) {
     };
 }
 
+/**
+ * Función principal: ejecuta el cálculo completo
+ */
 function calcular() {
     const origenVal = document.getElementById("origen").value;
     const destinoVal = document.getElementById("destino").value;
     const tipoTransporteVal = document.getElementById("tipoTransporte").value;
 
+    // Validaciones
     if (!origenVal || origenVal === "blank" || !destinoVal || destinoVal === "blank") {
         alert("Por favor selecciona un origen y un destino.");
         return;
@@ -276,14 +296,17 @@ function calcular() {
         return;
     }
 
+    // Obtener datos
     const o = lugares[origenVal];
     const d = lugares[destinoVal];
     const config = configTransporte[tipoTransporteVal];
 
+    // Cálculos
     const distancia = calcularDistancia(o.lat, o.lng, d.lat, d.lng);
     const tiempo = calcularTiempo(distancia, tipoTransporteVal);
     const costoInfo = calcularCosto(distancia, tipoTransporteVal);
 
+    // Mostrar resultados
     document.getElementById("transporteTxt").textContent = config.nombre;
     document.getElementById("origenTxt").textContent = o.nombre;
     document.getElementById("destinoTxt").textContent = d.nombre;
@@ -291,6 +314,7 @@ function calcular() {
     document.getElementById("tiempoTxt").textContent = tiempo;
     document.getElementById("costoTxt").textContent = costoInfo.total;
     
+    // Actualizar nota con detalle de tarifa
     const notaTarifa = document.querySelector(".nota-tarifa");
     if (notaTarifa) {
         notaTarifa.textContent = "* " + costoInfo.detalle;
@@ -299,6 +323,9 @@ function calcular() {
     document.getElementById("resultado").style.display = "block";
 }
 
+/**
+ * Restablece todos los campos y oculta el resultado
+ */
 function restablecer() {
     document.getElementById("origen").selectedIndex = 0;
     document.getElementById("destino").selectedIndex = 0;
@@ -319,6 +346,7 @@ function restablecer() {
     document.getElementById("resultado").style.display = "none";
 }
 
+// ======== INICIALIZACIÓN DE EVENTOS ========
 export function initTransporte() {
     const btnCalcular = document.getElementById("btn-calcular");
     const btnRestablecer = document.getElementById("btn-restablecer");
@@ -330,6 +358,7 @@ export function initTransporte() {
         btnRestablecer.addEventListener("click", restablecer);
     }
 
+    // Click en tarjetas para seleccionar transporte automáticamente
     const tarjetas = document.querySelectorAll(".transp-card");
     tarjetas.forEach(tarjeta => {
         tarjeta.addEventListener("click", function() {
@@ -337,6 +366,7 @@ export function initTransporte() {
             const select = document.getElementById("tipoTransporte");
             if (select && tipo) {
                 select.value = tipo;
+                // Efecto visual
                 tarjetas.forEach(t => t.style.borderColor = "#2E86DE");
                 this.style.borderColor = "#eab308";
             }
