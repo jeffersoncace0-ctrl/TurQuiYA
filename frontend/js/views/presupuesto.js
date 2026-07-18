@@ -289,7 +289,7 @@ export function presupuesto() {
             <!-- Burbuja flotante de IA (Tu código) -->
             <div id="ai-bubble" style="background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 18px; border-radius: 16px 16px 16px 0; font-size: 14.5px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3); margin-bottom: 30px; display: flex; gap: 12px; align-items: flex-start; transition: all 0.3s ease; border-left: 5px solid #eab308;">
                 <div style="font-size: 30px; animation: pulse 2s infinite;">🤖</div>
-                <div id="ai-message" style="line-height: 1.5;">¡Eche, hola! Soy tu <strong>Guía IA Atlántico</strong>. Cuéntame cuánto presupuesto tienes y con cuántas personas viajas, y te armo un plan bacano al instante.</div>
+                <div id="ai-message" style="line-height: 1.5;">¡Hola! Soy tu <strong>Guía IA Atlántico</strong>. Cuéntame cuánto presupuesto tienes y con cuántas personas viajas, y te armo un plan al instante.</div>
             </div>
             <style>@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }</style>
 
