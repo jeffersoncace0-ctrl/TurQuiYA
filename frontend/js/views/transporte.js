@@ -109,7 +109,7 @@ export async function transporte() {
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Yango_%28entreprise%29.png" alt="Yango" style="height: 25px;">
                 </a>
                 <a href="https://indrive.com/es-co" target="_blank" rel="noopener noreferrer">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/InDrive_Logo.svg" alt="InDriver" style="height: 25px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/InDrive_Logo.svg" alt="InDrive" style="height: 25px;">
                 </a>
             </div>
     `;
