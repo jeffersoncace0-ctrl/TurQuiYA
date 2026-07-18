@@ -98,21 +98,20 @@ export async function transporte() {
                 <p class="nota-tarifa">* Tarifa aplicada según distancia y tipo de transporte</p>
             </div>
 
-            <div id="logoTransp">
+            <div id="logoTransp" style="display: flex; justify-content: center; gap: 20px; align-items: center; flex-wrap: wrap; margin-top: 20px; padding-bottom: 20px;">
                 <a href="https://web.didiglobal.com/co/pasajero/" target="_blank" rel="noopener noreferrer">
-                    <img src="./img/didi-logo.png" alt="DiDi">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/DiDi_logo.svg" alt="DiDi" style="height: 25px;">
                 </a>
                 <a href="https://www.uber.com/co/es/" target="_blank" rel="noopener noreferrer">
-                    <img src="./img/logo-uber.png" alt="Uber">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt="Uber" style="height: 25px;">
                 </a>
                 <a href="https://yango.com/es_co/" target="_blank" rel="noopener noreferrer">
-                    <img src="./img/yango-logo.jpg" alt="Yango">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Yango_logo.svg/1024px-Yango_logo.svg.png" alt="Yango" style="height: 25px;">
                 </a>
                 <a href="https://indrive.com/es-co" target="_blank" rel="noopener noreferrer">
-                    <img src="./img/indriver-logo.png" alt="InDriver">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/InDrive_Logo.svg/1024px-InDrive_Logo.svg.png" alt="InDriver" style="height: 25px;">
                 </a>
             </div>
-        </div>
     `;
 }
 

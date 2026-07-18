@@ -30,7 +30,7 @@ export function presupuesto() {
             const personas = parseInt(personasInput.value) || 1;
             
             if(dinero === 0) {
-                aiMessage.innerHTML = "¡Eche, hola! Soy tu <strong>Guía IA Atlántico</strong>. Cuéntame cuánto presupuesto tienes y con cuántas personas viajas, y te armo un plan bacano al instante.";
+                aiMessage.innerHTML = "¡Hola! Soy tu <strong>Guía IA Atlántico</strong>. Cuéntame cuánto presupuesto tienes y con cuántas personas viajas, y te armaré un plan al instante.";
                 return;
             }
 
