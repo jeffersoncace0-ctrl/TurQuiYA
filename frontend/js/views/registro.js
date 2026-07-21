@@ -17,7 +17,9 @@ export function registro() {
                 const correo = document.getElementById("correo").value.trim();
                 const pais = document.getElementById("pais").value;
                 const moneda = document.getElementById("moneda").value;
-                const password = document.getElementById("password").value.trim();
+                
+                // CORRECCIÓN AQUÍ: Se cambió "password" por "registroPassword" para que coincida con el HTML
+                const password = document.getElementById("registroPassword").value.trim();
                 const confirmar = document.getElementById("confirmar").value.trim();
                 const terminos = document.getElementById("terminos").checked;
 
@@ -80,34 +82,37 @@ export function registro() {
                     error.textContent = err.message || "Error al crear la cuenta. Intenta de nuevo.";
                 }
             });
-        const btnToggleRegistro = document.getElementById('toggleRegistroPassword');
-        const inputRegistro = document.getElementById('registroPassword');
 
-        if (btnToggleRegistro && inputRegistro) {
-            btnToggleRegistro.addEventListener('click', () => {
-                if (inputRegistro.type === 'password') {
-                    inputRegistro.type = 'text';
-                    btnToggleRegistro.textContent = '👁️ Ocultar';
-                } else {
-                    inputRegistro.type = 'password';
-                    btnToggleRegistro.textContent = '👁️ Revelar';
-                }
-            });
-        }
-        const btnToggleConfirmar = document.getElementById('toggleConfirmarPassword');
-        const inputConfirmar = document.getElementById('confirmar');
+            // Lógica de botones de revelar contraseña
+            const btnToggleRegistro = document.getElementById('toggleRegistroPassword');
+            const inputRegistro = document.getElementById('registroPassword');
 
-        if (btnToggleConfirmar && inputConfirmar) {
-            btnToggleConfirmar.addEventListener('click', () => {
-                if (inputConfirmar.type === 'password') {
-                    inputConfirmar.type = 'text';
-                    btnToggleConfirmar.textContent = '👁️ Ocultar';
-                } else {
-                    inputConfirmar.type = 'password';
-                    btnToggleConfirmar.textContent = '👁️ Revelar';
-                }
-            });
-        }
+            if (btnToggleRegistro && inputRegistro) {
+                btnToggleRegistro.addEventListener('click', () => {
+                    if (inputRegistro.type === 'password') {
+                        inputRegistro.type = 'text';
+                        btnToggleRegistro.textContent = '👁️ Ocultar';
+                    } else {
+                        inputRegistro.type = 'password';
+                        btnToggleRegistro.textContent = '👁️ Revelar';
+                    }
+                });
+            }
+
+            const btnToggleConfirmar = document.getElementById('toggleConfirmarPassword');
+            const inputConfirmar = document.getElementById('confirmar');
+
+            if (btnToggleConfirmar && inputConfirmar) {
+                btnToggleConfirmar.addEventListener('click', () => {
+                    if (inputConfirmar.type === 'password') {
+                        inputConfirmar.type = 'text';
+                        btnToggleConfirmar.textContent = '👁️ Ocultar';
+                    } else {
+                        inputConfirmar.type = 'password';
+                        btnToggleConfirmar.textContent = '👁️ Revelar';
+                    }
+                });
+            }
         }
     }, 0);
 
