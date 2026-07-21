@@ -9,6 +9,7 @@ export function login() {
         const form = document.getElementById('loginForm');
         const errorTxt = document.getElementById('loginError');
 
+
         if (form) {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -40,7 +41,7 @@ export function login() {
                     const datosParaGuardar = perfil ? perfil : user;
                     localStorage.setItem('usuario', JSON.stringify(datosParaGuardar));
                     
-                    alert("Inicio de sesión exitoso");
+                    navigate('home');
                     
                     if (typeof navigate === 'function') {
                         navigate('home');
@@ -59,10 +60,24 @@ export function login() {
                     }
                 }
             });
+        const btnToggleLogin = document.getElementById('toggleLoginPassword');
+        const inputLogin = document.getElementById('loginPassword');
+
+        if (btnToggleLogin && inputLogin) {
+            btnToggleLogin.addEventListener('click', () => {
+                if (inputLogin.type === 'password') {
+                    inputLogin.type = 'text';
+                    btnToggleLogin.textContent = '👁️ Ocultar';
+                } else {
+                    inputLogin.type = 'password';
+                    btnToggleLogin.textContent = '👁️ Revelar';
+                }
+            });
+        }
         }
     }, 50);
 
-    return `
+return `
     <div class="login-container">
         <div class="login-left">
             <h1>TurquiYA</h1>
@@ -72,10 +87,14 @@ export function login() {
             <p class="subtitulo">Ingresa tus datos para continuar</p>
             <form id="loginForm">
                 <label>Correo electrónico</label>
-                <input type="email" id="loginEmail" placeholder="correo@gmail.com" required>
+                <input type="email" id="loginEmail" placeholder="Ingresa tu correo" required>
                 <label>Contraseña</label>
-                <input type="password" id="loginPassword" placeholder="********" required>
-                <p class="password-info">Tu contraseña debe cumplir los requisitos de seguridad.</p>
+                <div style="display: flex; gap: 10px; align-items: stretch; width: 100%;">
+                    <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" style="flex: 1 1 auto !important; width: 100% !important; min-width: 0 !important; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box; outline-color: #3b82f6;" required>
+                    <button type="button" id="toggleLoginPassword" style="flex: 0 0 auto !important; width: max-content !important; min-width: max-content !important; white-space: nowrap; background: #cbd5e1; color: #334155; border: none; padding: 0 15px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                        👁️ Revelar
+                    </button>                  
+                </div>
                 <p id="loginError" class="error" style="color: red; font-size: 14px; margin-top: 5px; margin-bottom: 10px; min-height: 18px;"></p>
                 <button type="submit">Ingresar</button>
             </form>

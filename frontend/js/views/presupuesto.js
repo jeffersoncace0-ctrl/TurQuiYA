@@ -22,9 +22,8 @@ export function presupuesto() {
         const otroTiempoInput = document.getElementById('otroTiempoInput');
         const tiempoCalculado = document.getElementById('tiempoCalculado');
 
-        // Reacción en tiempo real de la IA (Tu código adaptado)
+        // Reacción en tiempo real de la IA
         const actualizarReaccionIA = () => {
-            // Limpiamos los puntos de miles antes de calcular
             const valorLimpio = dineroInput.value.replace(/\./g, '');
             const dinero = parseFloat(valorLimpio) || 0;
             const personas = parseInt(personasInput.value) || 1;
@@ -45,16 +44,16 @@ export function presupuesto() {
             }
         };
 
-        // Formateador de miles en tiempo real (Código de tu compañero)
+        // Formateador de miles en tiempo real
         if (dineroInput) {
             dineroInput.addEventListener('input', function(e) {
-                let valor = this.value.replace(/\D/g, ''); // Deja solo números
+                let valor = this.value.replace(/\D/g, ''); 
                 if (valor !== '') {
                     this.value = parseInt(valor, 10).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                 } else {
                     this.value = '';
                 }
-                actualizarReaccionIA(); // Despierta a la IA después de formatear
+                actualizarReaccionIA(); 
             });
         }
 
@@ -75,7 +74,7 @@ export function presupuesto() {
             });
         }
 
-        // Lógica de cálculo de tiempo inteligente (Código de tu compañero)
+        // Lógica de cálculo de tiempo inteligente
         if (otroTiempoInput && tiempoCalculado) {
             otroTiempoInput.addEventListener('input', (e) => {
                 const texto = e.target.value.toLowerCase();
@@ -110,12 +109,65 @@ export function presupuesto() {
             });
         }
 
+        // DELEGACIÓN DE EVENTOS PARA LOS BOTONES DINÁMICOS DEL ITINERARIO
+        if (resultadoRuta) {
+            resultadoRuta.addEventListener('click', (e) => {
+                // Si hizo clic en un botón de "Ver itinerario"
+                if (e.target.classList.contains('btn-itinerario')) {
+                    const tipoExp = document.getElementById('tipoExperiencia').value;
+                    const origen = document.getElementById('puntoPartida').value || 'Ubicación actual';
+                    const nombreOpcion = e.target.dataset.opcion;
+                    
+                    // Filtrar destinos por categoría elegida
+                    let destinosFiltrados = destinosSimulados.filter(d => d.categoria === tipoExp);
+                    if (destinosFiltrados.length === 0) {
+                        destinosFiltrados = destinosSimulados.slice(0, 3); // Fallback si no hay suficientes
+                    }
+
+                    let htmlItinerario = `
+                        <div style="background: white; padding: 25px; border-radius: 16px; border: 2px solid #0288d1; animation: fadeIn 0.4s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                            <h3 style="color: #0288d1; margin-top: 0; font-size: 22px;">📍 Tu Itinerario: ${nombreOpcion}</h3>
+                            <p style="color: #64748b; font-size: 14px; margin-bottom: 25px;">Punto de partida: <strong>${origen}</strong></p>
+                            
+                            <div style="position: relative; padding-left: 20px; border-left: 2px dashed #cbd5e1; margin-bottom: 25px;">
+                    `;
+
+                    destinosFiltrados.forEach((dest, index) => {
+                        htmlItinerario += `
+                                <div style="margin-bottom: 25px; position: relative;">
+                                    <div style="position: absolute; left: -31px; top: 0; background: #0288d1; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 4px solid white;">${index + 1}</div>
+                                    <h4 style="margin: 0; color: #1e293b; font-size: 16px;">${dest.nombre}</h4>
+                                    <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b;">📍 ${dest.municipio} | ⏱️ Estancia: ${dest.tiempoMinimo}</p>
+                                    <p style="margin: 3px 0 0 0; font-size: 13px; color: #10b981; font-weight: bold;">💰 Costo aprox: $${dest.costoPromedio.toLocaleString('es-CO')}</p>
+                                </div>
+                        `;
+                    });
+
+                    htmlItinerario += `
+                            </div>
+                            <button class="btn-volver" style="width: 100%; background: #f1f5f9; color: #334155; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                                ⬅️ Volver a las opciones de presupuesto
+                            </button>
+                        </div>
+                    `;
+
+                    resultadoRuta.innerHTML = htmlItinerario;
+                    // Hacemos scroll suave hasta el itinerario
+                    resultadoRuta.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+
+                // Si hizo clic en volver, disparamos el submit de nuevo para mostrar las cards
+                if (e.target.classList.contains('btn-volver')) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+        }
+
         // Lógica de cálculo al presionar "Crear ruta"
         if (form && resultadoRuta) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
 
-                // Quita los puntos antes de convertir a número para hacer el cálculo real
                 const dineroTotalCrudo = document.getElementById('dineroInput').value.replace(/\./g, '');
                 const dineroTotal = parseFloat(dineroTotalCrudo);
                 const cantidadPersonas = parseInt(document.getElementById('personasInput').value);
@@ -125,7 +177,6 @@ export function presupuesto() {
                     return;
                 }
 
-                const presupuestoPorPersona = dineroTotal / cantidadPersonas;
                 const expElegida = document.getElementById('tipoExperiencia').value;
 
                 resultadoRuta.innerHTML = `
@@ -146,6 +197,7 @@ export function presupuesto() {
                     
                     const totalExperiencia1 = dineroTotal * 0.99; 
                     const totalExperiencia2 = dineroTotal * 0.75; 
+                    const totalExperiencia3 = dineroTotal * 0.50;
 
                     let htmlAI = `
                         <div style="animation: fadeIn 0.5s ease;">
@@ -169,17 +221,6 @@ export function presupuesto() {
                                 <p style="color: #334155; font-size: 15px; line-height: 1.6; margin-top: 0; margin-bottom: 20px; font-style: italic;">
                                     "Aquí tienes la ruta ideal para exprimir cada centavo de tus $${dineroTotal.toLocaleString('es-CO')} COP en una inmersión súper premium."
                                 </p>
-
-                                <div style="margin-bottom: 20px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; font-weight: bold; color: #475569;">
-                                        <span>Consumo del presupuesto</span>
-                                        <span>99%</span>
-                                    </div>
-                                    <div style="width: 100%; background: #e2e8f0; border-radius: 10px; height: 10px; overflow: hidden;">
-                                        <div style="width: 99%; background: #ef4444; height: 100%; border-radius: 10px;"></div>
-                                    </div>
-                                </div>
-
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
                                     <span style="color: #64748b; font-weight: bold;">Presupuesto calculado:</span>
                                     <span style="color: #ef4444; font-weight: 900; font-size: 18px;">$${totalExperiencia1.toLocaleString('es-CO', {maximumFractionDigits: 0})} COP</span>
@@ -189,9 +230,8 @@ export function presupuesto() {
                                     <li style="display: flex; justify-content: space-between;"><span>🚗 Transporte cómodo y privado:</span> <strong>$${(dineroTotal * 0.12).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
                                     <li style="display: flex; justify-content: space-between;"><span>🥘 Restaurante premium y antojos:</span> <strong>$${(dineroTotal * 0.47).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
                                     <li style="display: flex; justify-content: space-between;"><span>🎟️ Tours VIP y actividades:</span> <strong>$${(dineroTotal * 0.20).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
-                                    <li style="display: flex; justify-content: space-between; color: #94a3b8;"><span>🛡️ Reserva imprevistos:</span> <strong>$${(dineroTotal * 0.20).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
                                 </ul>
-                                <button style="width: 100%; background: #ef4444; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);">Ver itinerario paso a paso</button>
+                                <button class="btn-itinerario" data-opcion="Experiencia Total" style="width: 100%; background: #ef4444; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);">Ver itinerario paso a paso</button>
                             </div>
                         </div>
                     `;
@@ -207,35 +247,21 @@ export function presupuesto() {
                                 <p style="color: #334155; font-size: 15px; line-height: 1.6; margin-top: 0; margin-bottom: 20px; font-style: italic;">
                                     "Mismo destino, pero cambiando el restaurante premium por un almuerzo tradicional en la plaza y usando transporte público intermunicipal."
                                 </p>
-
-                                <div style="margin-bottom: 20px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; font-weight: bold; color: #475569;">
-                                        <span>Consumo del presupuesto</span>
-                                        <span>75%</span>
-                                    </div>
-                                    <div style="width: 100%; background: #e2e8f0; border-radius: 10px; height: 10px; overflow: hidden;">
-                                        <div style="width: 75%; background: #f59e0b; height: 100%; border-radius: 10px;"></div>
-                                    </div>
-                                </div>
-
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
                                     <span style="color: #64748b; font-weight: bold;">Presupuesto calculado:</span>
                                     <span style="color: #f59e0b; font-weight: 900; font-size: 18px;">$${totalExperiencia2.toLocaleString('es-CO', {maximumFractionDigits: 0})} COP</span>
                                 </div>
-                                <h4 style="margin: 0 0 15px 0; color: #1e293b;">Desglose del plan (para ${cantidadPersonas} personas):</h4>
                                 <ul style="list-style: none; padding: 0; margin: 0 0 20px 0; color: #475569; font-size: 14.5px; line-height: 2;">
                                     <li style="display: flex; justify-content: space-between;"><span>🚌 Transporte público intermunicipal:</span> <strong>$${(dineroTotal * 0.08).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
                                     <li style="display: flex; justify-content: space-between;"><span>🍛 Almuerzo en plaza local:</span> <strong>$${(dineroTotal * 0.35).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
                                     <li style="display: flex; justify-content: space-between;"><span>🚶 Recorridos guiados sencillos:</span> <strong>$${(dineroTotal * 0.32).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
-                                    <li style="display: flex; justify-content: space-between; color: #10b981; font-weight: bold;"><span>💵 Ahorro directo en tu bolsillo:</span> <strong>$${(dineroTotal * 0.25).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
                                 </ul>
-                                <button style="width: 100%; background: #f59e0b; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);">Ver itinerario paso a paso</button>
+                                <button class="btn-itinerario" data-opcion="Aventura Inteligente" style="width: 100%; background: #f59e0b; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);">Ver itinerario paso a paso</button>
                             </div>
                         </div>
                     `;
 
                     // Card Ruta Mochilera
-                    const totalExperiencia3 = dineroTotal * 0.50; // 50%
                     htmlAI += `
                         <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.08); border: 2px solid #10b981; margin-bottom: 30px; position: relative;">
                             <div style="background: #10b981; color: white; padding: 12px 20px; font-weight: bold; font-size: 18px; display: flex; justify-content: space-between; align-items: center;">
@@ -244,37 +270,24 @@ export function presupuesto() {
                             </div>
                             <div style="padding: 25px;">
                                 <p style="color: #334155; font-size: 15px; line-height: 1.6; margin-top: 0; margin-bottom: 20px; font-style: italic;">
-                                    "¡Viajar barato también es delicioso! Una ruta autoguiada por el Centro Histórico de Barranquilla con el mayor ahorro posible."
+                                    "¡Viajar barato también es delicioso! Una ruta con el mayor ahorro posible."
                                 </p>
-
-                                <div style="margin-bottom: 20px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; font-weight: bold; color: #475569;">
-                                        <span>Consumo del presupuesto</span>
-                                        <span>50%</span>
-                                    </div>
-                                    <div style="width: 100%; background: #e2e8f0; border-radius: 10px; height: 10px; overflow: hidden;">
-                                        <div style="width: 50%; background: #10b981; height: 100%; border-radius: 10px;"></div>
-                                    </div>
-                                </div>
-
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
                                     <span style="color: #64748b; font-weight: bold;">Presupuesto calculado:</span>
                                     <span style="color: #10b981; font-weight: 900; font-size: 18px;">$${totalExperiencia3.toLocaleString('es-CO', {maximumFractionDigits: 0})} COP</span>
                                 </div>
-                                <h4 style="margin: 0 0 15px 0; color: #1e293b;">Desglose del plan (para ${cantidadPersonas} personas):</h4>
                                 <ul style="list-style: none; padding: 0; margin: 0 0 20px 0; color: #475569; font-size: 14.5px; line-height: 2;">
-                                    <li style="display: flex; justify-content: space-between;"><span>🚌 Transporte en Transmetro:</span> <strong>$${(dineroTotal * 0.05).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
-                                    <li style="display: flex; justify-content: space-between;"><span>🥟 Fritos, arepas y comida callejera:</span> <strong>$${(dineroTotal * 0.25).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
-                                    <li style="display: flex; justify-content: space-between;"><span>🚶 Recorrido histórico libre (Barrio Abajo):</span> <strong>$${(dineroTotal * 0.20).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
-                                    <li style="display: flex; justify-content: space-between; color: #10b981; font-weight: bold;"><span>💵 Ahorro directo en tu bolsillo:</span> <strong>$${(dineroTotal * 0.50).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
+                                    <li style="display: flex; justify-content: space-between;"><span>🚌 Transporte público:</span> <strong>$${(dineroTotal * 0.05).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
+                                    <li style="display: flex; justify-content: space-between;"><span>🥟 Comida callejera:</span> <strong>$${(dineroTotal * 0.25).toLocaleString('es-CO', {maximumFractionDigits: 0})}</strong></li>
                                 </ul>
-                                <button style="width: 100%; background: #10b981; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">Ver itinerario paso a paso</button>
+                                <button class="btn-itinerario" data-opcion="Ruta Mochilera" style="width: 100%; background: #10b981; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">Ver itinerario paso a paso</button>
                             </div>
                         </div>
                     `;
 
                     htmlAI += `</div>`;
                     resultadoRuta.innerHTML = htmlAI;
+                    resultadoRuta.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
                 }, 1800);
             });
@@ -286,7 +299,6 @@ export function presupuesto() {
         
         <div style="background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; position: relative;">
             
-            <!-- Burbuja flotante de IA (Tu código) -->
             <div id="ai-bubble" style="background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 18px; border-radius: 16px 16px 16px 0; font-size: 14.5px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3); margin-bottom: 30px; display: flex; gap: 12px; align-items: flex-start; transition: all 0.3s ease; border-left: 5px solid #eab308;">
                 <div style="font-size: 30px; animation: pulse 2s infinite;">🤖</div>
                 <div id="ai-message" style="line-height: 1.5;">¡Hola! Soy tu <strong>Guía IA Atlántico</strong>. Cuéntame cuánto presupuesto tienes y con cuántas personas viajas, y te armo un plan al instante.</div>
@@ -298,7 +310,20 @@ export function presupuesto() {
 
             <form id="presupuestoForm">
                 
-                <!-- Input cambiado a type="text" para permitir los puntos de miles -->
+                <!-- NUEVO CAMPO: PUNTO DE PARTIDA -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #334155; font-size: 14px;">📍 Punto de partida</label>
+                    <select id="puntoPartida" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; background-color: white; box-sizing: border-box;" required>
+                        <option value="">¿Desde dónde sales?</option>
+                        <option value="Barranquilla (Norte)">Barranquilla (Norte)</option>
+                        <option value="Barranquilla (Sur)">Barranquilla (Sur)</option>
+                        <option value="Soledad">Soledad</option>
+                        <option value="Puerto Colombia">Puerto Colombia</option>
+                        <option value="Aeropuerto Ernesto Cortissoz">Aeropuerto Ernesto Cortissoz</option>
+                        <option value="Otro municipio">Otro municipio</option>
+                    </select>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #334155; font-size: 14px;">Presupuesto Total disponible (COP)</label>
                     <input type="text" id="dineroInput" placeholder="Ej. 500.000" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box;" required>
@@ -334,7 +359,6 @@ export function presupuesto() {
                     </select>
                 </div>
 
-                <!-- Input Dinámico para "Otros" tiempos (Código de tu compañero con calculadora) -->
                 <div id="contenedorOtros" style="margin-bottom: 20px; display: none;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #334155; font-size: 14px;">Especifica tu tiempo disponible</label>
                     <input type="text" id="otroTiempoInput" placeholder="Ej. 10 días, 2 semanas..." style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box;">

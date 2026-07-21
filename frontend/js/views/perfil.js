@@ -7,6 +7,8 @@ export function perfil() {
         bio: "¡Listo para explorar las playas y la cultura del Atlántico!"
     };
 
+    let fotoPerfil = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"; // Foto por defecto más bonita
+
     try {
         const sesion = localStorage.getItem('usuario');
         if (sesion) {
@@ -14,11 +16,29 @@ export function perfil() {
             if (usuarioObj.nombre) datosUsuario.nombre = usuarioObj.nombre;
             if (usuarioObj.email) datosUsuario.email = usuarioObj.email;
         }
+
+        // Recuperar la foto guardada (Truco MVP)
+        const fotoGuardada = localStorage.getItem('fotoPerfilTurquiya');
+        if (fotoGuardada) {
+            fotoPerfil = fotoGuardada;
+        }
     } catch (e) {
         console.error("Error leyendo sesión:", e);
     }
 
-    // 2. Lógica interactiva para manejar los eventos del perfil
+    // LISTA DE PAÍSES PARA EL DESPLEGABLE
+    const listaPaises = [
+        "Colombia 🇨🇴", "México 🇲🇽", "Argentina 🇦🇷", "Perú 🇵🇪", 
+        "Chile 🇨🇱", "Ecuador 🇪🇨", "España 🇪🇸", "Estados Unidos 🇺🇸", 
+        "Panamá 🇵🇦", "Venezuela 🇻🇪", "Otro"
+    ];
+
+    const opcionesPaisHTML = listaPaises.map(pais => {
+        const seleccionado = datosUsuario.pais === pais ? 'selected' : '';
+        return `<option value="${pais}" ${seleccionado}>${pais}</option>`;
+    }).join('');
+
+    // 2. Lógica interactiva
     setTimeout(() => {
         const form = document.getElementById('perfilForm');
         const fotoInput = document.getElementById('fotoInput');
@@ -26,21 +46,29 @@ export function perfil() {
         const btnTogglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('perfilPassword');
 
-        // Cambiar dinámicamente la foto de perfil al seleccionar un archivo
+        // Cambiar y GUARDAR dinámicamente la foto de perfil
         if (fotoInput && previewFoto) {
             fotoInput.addEventListener('change', (e) => {
                 const archivo = e.target.files[0];
                 if (archivo) {
+                    // Validar tamaño para que no colapse el localStorage (max 2MB)
+                    if(archivo.size > 2 * 1024 * 1024) {
+                        alert("Por favor elige una imagen más pequeña (Máximo 2MB)");
+                        return;
+                    }
                     const reader = new FileReader();
                     reader.onload = (event) => {
-                        previewFoto.src = event.target.result;
+                        const base64Image = event.target.result;
+                        previewFoto.src = base64Image;
+                        // Guardar en localStorage para que no se borre al recargar
+                        localStorage.setItem('fotoPerfilTurquiya', base64Image);
                     };
                     reader.readAsDataURL(archivo);
                 }
             });
         }
 
-        // Mostrar u ocultar el texto de la contraseña
+        // Mostrar u ocultar contraseña
         if (btnTogglePassword && passwordInput) {
             btnTogglePassword.addEventListener('click', () => {
                 if (passwordInput.type === 'password') {
@@ -53,16 +81,16 @@ export function perfil() {
             });
         }
 
-        // Guardar cambios localmente en la interfaz
+        // Guardar cambios
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                alert('¡Perfil actualizado con éxito localmente! 🎉');
+                alert('¡Perfil actualizado con éxito! 🎉');
             });
         }
     }, 50);
 
-    // 3. Estructura HTML con diseño premium adaptado a tu barra azul
+    // 3. Estructura HTML
     return `
     <div style="padding: 40px 20px; max-width: 700px; margin: 0 auto; font-family: sans-serif;">
         <div style="background: white; border-radius: 16px; padding: 35px; box-shadow: 0 4px 25px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-top: 5px solid #ef4444;">
@@ -72,10 +100,10 @@ export function perfil() {
 
             <form id="perfilForm">
                 
-                <!-- ZONA DE FOTO DE PERFIL / AVATAR INTERACTIVO -->
+                <!-- ZONA DE FOTO DE PERFIL -->
                 <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1;">
                     <div style="width: 110px; height: 110px; border-radius: 50%; overflow: hidden; border: 3px solid #eab308; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 12px; background: #e2e8f0;">
-                        <img id="previewFoto" src="https://unsplash.com" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img id="previewFoto" src="${fotoPerfil}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="fotoInput" style="background: #10b981; color: white; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; transition: background 0.2s; box-shadow: 0 2px 4px rgba(16,185,129,0.3);">
                         📸 Cambiar foto de perfil
@@ -96,7 +124,7 @@ export function perfil() {
                     <small style="color: #94a3b8; font-size: 12px; margin-top: 4px; display: block;">El correo electrónico está vinculado a tu cuenta y no se puede modificar.</small>
                 </div>
 
-                <!-- CAMPO CONTRASEÑA INTERACTIVO -->
+                <!-- CAMPO CONTRASEÑA -->
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #eab308; font-size: 15px;">Contraseña de seguridad</label>
                     <div style="display: flex; gap: 10px;">
@@ -108,7 +136,9 @@ export function perfil() {
                 <!-- CAMPO PAÍS -->
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #10b981; font-size: 15px;">País de procedencia</label>
-                    <input type="text" value="${datosUsuario.pais}" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box; outline-color: #10b981;" required>
+                    <select style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box; outline-color: #10b981; background-color: white; cursor: pointer;" required>
+                        ${opcionesPaisHTML}
+                    </select>
                 </div>
 
                 <!-- CAMPO BIOGRAFÍA -->

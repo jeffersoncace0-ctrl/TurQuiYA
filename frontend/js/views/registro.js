@@ -65,7 +65,7 @@ export function registro() {
                         moneda_preferida: monedaLimpia
                     });
 
-                    success.textContent = "Cuenta creada correctamente 🎉 Redirigiendo al login...";
+                    success.textContent = "¡Cuenta creada con éxito! Redirigiendo al inicio de sesión...";
                     form.reset();
 
                     setTimeout(() => {
@@ -80,10 +80,38 @@ export function registro() {
                     error.textContent = err.message || "Error al crear la cuenta. Intenta de nuevo.";
                 }
             });
+        const btnToggleRegistro = document.getElementById('toggleRegistroPassword');
+        const inputRegistro = document.getElementById('registroPassword');
+
+        if (btnToggleRegistro && inputRegistro) {
+            btnToggleRegistro.addEventListener('click', () => {
+                if (inputRegistro.type === 'password') {
+                    inputRegistro.type = 'text';
+                    btnToggleRegistro.textContent = '👁️ Ocultar';
+                } else {
+                    inputRegistro.type = 'password';
+                    btnToggleRegistro.textContent = '👁️ Revelar';
+                }
+            });
+        }
+        const btnToggleConfirmar = document.getElementById('toggleConfirmarPassword');
+        const inputConfirmar = document.getElementById('confirmar');
+
+        if (btnToggleConfirmar && inputConfirmar) {
+            btnToggleConfirmar.addEventListener('click', () => {
+                if (inputConfirmar.type === 'password') {
+                    inputConfirmar.type = 'text';
+                    btnToggleConfirmar.textContent = '👁️ Ocultar';
+                } else {
+                    inputConfirmar.type = 'password';
+                    btnToggleConfirmar.textContent = '👁️ Revelar';
+                }
+            });
+        }
         }
     }, 0);
 
-    return `
+return `
     <div class="registro-container">
         <div class="registro-info">
             <div class="logo"><h1>TurquiYA</h1></div>
@@ -126,7 +154,15 @@ export function registro() {
                     <option>EUR - Euro</option>
                     <option>GBP - Libra esterlina</option>
                 </select>
-                <input id="password" type="password" placeholder="Contraseña segura" required>
+                
+                <!-- CAMPO CONTRASEÑA 1 -->
+                <div style="display: flex; gap: 10px;">
+                    <input type="password" id="registroPassword" placeholder="Crea una contraseña segura" style="flex-grow: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box; outline-color: #10b981;" required>
+                    <button type="button" id="toggleRegistroPassword" style="background: #cbd5e1; color: #334155; border: none; padding: 0 15px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                        👁️ Revelar
+                    </button>
+                </div>
+                
                 <div class="reglas">
                     <p>La contraseña debe contener:</p>
                     <ul>
@@ -137,7 +173,15 @@ export function registro() {
                         <li>Mínimo 6 caracteres</li>
                     </ul>
                 </div>
-                <input id="confirmar" type="password" placeholder="Confirmar contraseña" required>
+
+                <!-- CAMPO CONTRASEÑA 2 (CONFIRMACIÓN) -->
+                <div style="display: flex; gap: 10px;">
+                    <input type="password" id="confirmar" placeholder="Confirmar contraseña" style="flex-grow: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box; outline-color: #10b981;" required>
+                    <button type="button" id="toggleConfirmarPassword" style="background: #cbd5e1; color: #334155; border: none; padding: 0 15px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                        👁️ Revelar
+                    </button>
+                </div>
+
                 <div class="acciones">
                     <label class="check">
                         <input id="terminos" type="checkbox">
